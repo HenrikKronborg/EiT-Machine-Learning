@@ -8,12 +8,9 @@ import matplotlib.pyplot as plt
 
 # --- Parameters -------------------------------------------------------------
 
-TRAINING_SET     = "boneage-training-dataset"
-TRAINING_COUNT   = 500
-TEST_SET         = "boneage-test-dataset"
-TEST_COUNT       = 200
-SAMPLES_METADATA = "boneage-training-dataset.csv"
-
+TRAINING_DIR     = Path("boneage-training-dataset")
+TEST_DIR         = Path("boneage-test-dataset")
+SAMPLES_METADATA = Path("boneage-training-dataset.csv")
 
 # ----------------------------------------------------------------------------
 
@@ -31,44 +28,45 @@ with open(SAMPLES_METADATA, mode='r') as csv_file:
     ids, ages, is_males = zip(*data)
     
 
+# id->age mapping
 id_age = {id_: age for id_, age in zip(ids, ages)}
 
-# Initialize numpy array (3-tensor) for the training arrays & age labels
-training_arrays = np.empty((TRAINING_COUNT, MAX_HEIGHT, MAX_WIDTH))
-training_age = np.empty(TRAINING_COUNT)
+def obtain_data(data_path, id_label):
+    # Objects in dataset
+    obj_count = sum(1 for obj in data_path.iterdir())
+    
+    # Initialize numpy array (3-tensor) for the training arrays & age labels
+    dataset = np.empty((obj_count, MAX_HEIGHT, MAX_WIDTH))
+    label = np.empty(obj_count)
+    for i, image_file in enumerate(data_path.iterdir()):
+        print(f"Reading file {i+1} of {obj_count}.")
+        
+        # gets array from image path
+        dataset[i] = ARRAY_FROM_PATH(image_file.__str__())
+        
+        # gets label from id (file name)
+        label[i] = id_label[image_file.stem]
+    
+    return dataset, label
 
 # Iterate through the training set folder and add to image_arrays
-for i, image_file in enumerate(Path(TRAINING_SET).iterdir()):
-    print(f"{i+1}/{TRAINING_COUNT}")
-    
-    training_id = image_file.name.replace('.png', '')
-    
-    training_age[i] = id_age[training_id]
-    training_arrays[i] = ARRAY_FROM_PATH(str(image_file))
-
-# Initialize numpy array (3-tensor) for the training arrays & age labels
-test_arrays = np.empty((TRAINING_COUNT, MAX_HEIGHT, MAX_WIDTH))
-test_age = np.empty(TRAINING_COUNT)
+training_arrays, training_age = obtain_data(TRAINING_DIR, id_age)
 
 # Iterate through the training set folder and add to image_arrays
-for i, image_file in enumerate(Path(TEST_SET).iterdir()):
-    print(f"{i+1}/{TEST_COUNT}")
-    
-    test_id = image_file.name.replace('.png', '')
-    
-    test_age[i] = id_age[test_id]
-    test_arrays[i] = ARRAY_FROM_PATH(str(image_file))
-    
+test_arrays, test_age = obtain_data(TEST_DIR, id_age)
+
+# Pickle file names and their objects
 file_object = {
     "training_set"    : training_arrays,
     "training_labels" : training_age,
     "test_set"        : test_arrays,
     "test_labels"     : test_age,
 }
-    
+
 # Pickle dump the image arrays
 for file, obj in file_object.items():
     with open(f"{file}.P", mode='wb') as pickle_file:
+        print(f"Writing {file}.P.")
         obj.dump(pickle_file)
 
 if __name__ == "__main__":
