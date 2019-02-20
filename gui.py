@@ -1,15 +1,25 @@
 from tkinter import *
 from PIL import ImageTk, Image
+from tkinter.filedialog import askopenfilename
 
-root = Tk()
-root.title("EiT - Maskinlæring, Gruppe 1")
+def openFile():
+	filename = askopenfilename()
+	print(filename)
+	return filename;
 
-img = ImageTk.PhotoImage(Image.open("download.png"))
+def gui():
+	root = Tk()
+	root.title("EiT - Maskinlæring, Gruppe 1")
 
-panel = Label(root, image=img)
-panel.pack()
+	img = ImageTk.PhotoImage(Image.open("cat.jpg"))
 
-button = Button(root, text="hei", width=25, command=root.destroy)
-button.pack()
+	panel = Label(root, image=img)
+	panel.pack()
 
-mainloop()
+	button = Button(root, text="hei", width=25, command=openFile)
+	button.pack()
+
+	mainloop()
+
+if __name__ == '__main__':
+    gui()

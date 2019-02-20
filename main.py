@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
 
-from keras import losses
-
 with open("training_set.P", mode="rb") as pickle_file:
     train_data = np.load(pickle_file)
 
