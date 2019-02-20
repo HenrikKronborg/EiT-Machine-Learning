@@ -24,7 +24,9 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.vscode/
+.vscode
+.DS_Store
+.idea
 .idea/
 
 # PyInstaller
