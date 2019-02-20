@@ -2,7 +2,7 @@ from alarm_sound import alarm_sound
 from time import sleep
 from datetime import datetime, timedelta
 
-ALARM_TIME = "10:00"
+ALARM_TIME = input("Alarm when? (default: 10:00)\nHH:MM: ") or "10:00"
 
 now = datetime.now()
 
