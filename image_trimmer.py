@@ -1,4 +1,4 @@
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageStat
 import numpy as np
 
 def trim(im, f):
@@ -30,7 +30,11 @@ def sharpness2(img):
     sharpness = np.average(dnorm)
     
     return sharpness
-    
+
+def brightness(img):
+    stat = ImageStat.Stat(img)
+    return stat.mean[0]
+
 def change_contrast(img, level):
     # https://stackoverflow.com/questions/42045362/change-contrast-of-image-in-pil
     factor = (259 * (level + 255)) / (255 * (259 - level))
@@ -40,27 +44,21 @@ def change_contrast(img, level):
     
 if __name__ == "__main__":
     from pathlib import Path
-    names = [2086] #[1952, 1974, 2007, 2058, 2086]
     path = Path("boneage-test-dataset")
-    for name in names:
-        image = Image.open(path / f"{name}.png")
-        trimmed_image = trim(image, 1.0)
-        #trimmed_image.show()
     
     for i, img in enumerate(path.iterdir()):
         image = Image.open(img)
-        f = sharpness(image)/2
-        trimmed_image = trim(image, f)
-        F = sharpness(trimmed_image)
-        print(F)
-        contrast_image = change_contrast(trimmed_image, F*50)
+        s = sharpness(image)/2
+        trimmed_image = trim(image, s)
+        b = brightness(trimmed_image)
+        contrast_image = change_contrast(trimmed_image, max(b, 30))
         
         ow, oh = image.size
         tw, th = trimmed_image.size
         rw, rh = tw/ow, th/oh
         
         print(i, rw, rh)
-        if rw < 0.7 or rh < 0.7:
+        if rw < 0.7 or rh < 0.7 or 1:
             contrast_image.show()
             #input("Press any key to continue")
         
