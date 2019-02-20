@@ -17,10 +17,6 @@ BATCH_SIZE = 8
 opt = adam(lr=0.001)
 
 
-
-
-
-
 with open("training_set.P", mode="rb") as pickle_file:
     train_data = np.load(pickle_file)
 
