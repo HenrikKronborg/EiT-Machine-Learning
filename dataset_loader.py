@@ -1,16 +1,16 @@
 import numpy as np
-file_object = {
-    "training_set"    : None,
-    "training_labels" : None,
-    "test_set"        : None,
-    "test_labels"     : None,
-}
-    
+
+FILE_NAMES = ["training_set", "training_labels", "test_set", "test_labels"]
+
+# Loads pickle objects
+def obj_loader(name):
+    with open(f"{name}.P", mode="rb") as pickle_file:
+        print(f"Reading {name}.P.")
+        return np.load(pickle_file)
+
 # Pickle dump the image arrays
-for file in file_object:
-    with open(f"{file}.P", mode="rb") as pickle_file:
-        print(f"reading {file}")
-        file_object[file] = np.load(pickle_file)
+file_object = {name : obj_loader(name) for name in FILE_NAMES}
 
 if __name__ == "__main__":
+    print(file_object)
     print(file_object["training_set"].shape)
