@@ -5,26 +5,28 @@ from image_reader import *
 
 m = 0
 f = 0
+root = Tk()
 
 def openFile():
     filename = askopenfilename()
-    print(filename)
     display_picture(filename)
     
 
 def display_picture(path):
+    global root
     img = Image.open(path)
-    #img = img.resize((250, 250), Image.ANTIALIAS)
-    #img123 = ImageTk.PhotoImage(img)
-    #panel = Label(Tk(), image=img123)
-    #panel.pack()
+    img = img.resize((250, 250),Image.ANTIALIAS)
+    img = ImageTk.PhotoImage(img)
+    panel = Label(root, image=img)
+    panel.image = img
+    panel.pack()
     
 def gui():
-    root = Tk()
+    global root
     root.title("EiT - Maskinlæring, Gruppe 1")
 
-    button = Button(root, text="hei", width=25, command=openFile)
-    button.pack()
+    button = Button(root, text="Open X-ray",pady=-100, width=25, command=openFile)
+    button.pack(side = BOTTOM)
     
     rb1 = Radiobutton(root, text = "Male", padx = 20, variable = m, value = 1).pack(anchor=tk.W)
     rb2 = Radiobutton(root, text = "Female", padx = 20, variable = f, value = 2).pack(anchor=tk.W)
