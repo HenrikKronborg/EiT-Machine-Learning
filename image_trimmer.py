@@ -60,7 +60,7 @@ def equalize(im):
 
 if __name__ == "__main__":
     from pathlib import Path
-    path = Path("boneage-test-dataset")
+    path = Path("../data/boneage-test-dataset")
     
     for i, img in enumerate(path.iterdir()):
         image = Image.open(img)
@@ -79,6 +79,6 @@ if __name__ == "__main__":
             #contrast_image.show()
             #input("Press any key to continue")
         
-        contrast_image.save("corrected-boneage-test-dataset/{img.stem}.png")
+        contrast_image.save(f"../data/corrected-boneage-test-dataset/{img.stem}.png")
         
     

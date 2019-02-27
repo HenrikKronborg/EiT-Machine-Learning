@@ -9,8 +9,8 @@ def obj_loader(name):
         return np.load(pickle_file)
 
 # Pickle dump the image arrays
-file_object = {name : obj_loader(name) for name in FILE_NAMES}
+data = {name : obj_loader(name) for name in FILE_NAMES}
 
 if __name__ == "__main__":
-    print(file_object)
-    print(file_object["training_set"].shape)
+    print(data)
+    print(data["training_set"].shape)

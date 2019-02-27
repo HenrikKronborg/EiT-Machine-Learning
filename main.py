@@ -1,80 +1,50 @@
-import os
 from random import randint
+from dataset_loader import data
+from model import createModel
 
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import keras
 
-from keras.optimizers import adam
-from keras.utils import to_categorical
-
 ## hyper parameters adjust these:
 
 EPOCHS = 5
 BATCH_SIZE = 8
 
-opt = adam(lr=0.001)
+loss = keras.losses.categorical_crossentropy
+opt = keras.optimizers.adadelta(lr=0.01)
 
-
-with open("training_set.P", mode="rb") as pickle_file:
-    train_data = np.load(pickle_file)
-
-with open("training_labels.P", mode="rb") as pickle_file:
-    train_labels = np.load(pickle_file)
-
-print("input data shape:", train_data.shape)
-print("inpu fdsfsdfs ", train_labels)
-
-plt.imshow(train_data[0])
-print(train_data[0])
+train_data = data["training_set"]
+train_labels = data["training_labels"]
 
 train_data = np.array(train_data)
 train_data = np.resize(train_data, (500, 300, 300, 1))
 
-# convert labels to years:
-print("before convert.")
-print(train_labels[1])
 
+# convert labels to years and one hot encode
 ezyConvert = lambda x: x // 12
 train_labels = ezyConvert(train_labels)
-print("after..")
-print(train_labels.shape)
-print(train_labels[1])
+oneHot_labels = keras.utils.to_categorical(train_labels)
 
-oneHot_labels = to_categorical(train_labels)
-print(oneHot_labels.shape)
-print(oneHot_labels[1])
+# creates a model with the structure defined in model.py
+model = createModel(opt, loss)
 
-print(train_data.shape)
 
-model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(300, 300, 1)),
-    keras.layers.Dense(512, activation=tf.nn.relu),
-    keras.layers.Dense(512, activation=tf.nn.relu),
-    keras.layers.Dense(512, activation=tf.nn.relu),
-    keras.layers.Dense(512, activation=tf.nn.relu),
-    keras.layers.Dense(19, activation=tf.nn.softmax)
-])
-
-print("dfsdfs", train_labels[0])
-
-# opt = optimizers.SGD(lr=0.001, decay=1e-7, momentum=0.9)
-
-model.compile(optimizer=opt,
-              loss="mean_squared_error",
-              metrics=['accuracy'])
-
-print("Starting training...")
+# start training.
 model.fit(train_data, oneHot_labels, epochs=EPOCHS,
           batch_size=BATCH_SIZE)
 print("-----------    Training finished.    -----------")
 
+# save model.
+model.save("main_model.h5")
 
-# ------------- testing --------------
-for i in range(0, 10):
+
+# ---------------- yala testing --------------
+for i in range(0, 30):
     pred = model.predict(np.array([train_data[i]]))
 
+    print("pred output: ", pred)
     print("predicted: ", np.argmax(pred))
     print("actual answer: ", np.argmax(oneHot_labels[i]))
 
