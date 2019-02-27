@@ -2,6 +2,7 @@
 
 from PIL import Image
 import numpy as np
+from image_preprocessor import trim, equalize
 
 # --- Parameters -------------------------------------------------------------
 
@@ -73,7 +74,10 @@ def ARRAY_FROM_PATH(path):
     """
     raw_image = Image.open(path)
     resized_image = scale(raw_image)
-    array_image = np.asarray(resized_image)
+    trimmed_image = trim(resized_image)
+    equalized_image = equalize(trimmed_image)
+    # crop_image = crop()
+    array_image = np.asarray(equalized_image)
     padded_array_image = pad(array_image)
     
     return padded_array_image
