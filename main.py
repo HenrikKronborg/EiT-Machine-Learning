@@ -7,13 +7,20 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import keras
 
-## hyper parameters adjust these:
 
-EPOCHS = 5
-BATCH_SIZE = 8
 
-loss = keras.losses.categorical_crossentropy
-opt = keras.optimizers.adadelta(lr=0.01)
+### hyper parameters adjust these:
+
+EPOCHS = 1
+BATCH_SIZE = 1
+
+LEARNING_RATE = 0.001
+
+loss = keras.losses.mean_squared_error
+opt = keras.optimizers.adadelta(lr=LEARNING_RATE)
+
+### ----------------------------------------
+
 
 train_data = data["training_set"]
 train_labels = data["training_labels"]
@@ -32,16 +39,18 @@ model = createModel(opt, loss)
 
 
 # start training.
-model.fit(train_data, oneHot_labels, epochs=EPOCHS,
+hist = model.fit(train_data, oneHot_labels, epochs=EPOCHS,
           batch_size=BATCH_SIZE)
+          
 print("-----------    Training finished.    -----------")
+print(hist.history)
 
 # save model.
-model.save("main_model.h5")
+model.save("new_model.h5")
 
 
 # ---------------- yala testing --------------
-for i in range(0, 30):
+for i in range(0, 5):
     pred = model.predict(np.array([train_data[i]]))
 
     print("pred output: ", pred)
