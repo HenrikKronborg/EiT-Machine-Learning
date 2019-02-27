@@ -40,6 +40,8 @@ def trim(image):
     if bbox:
         # Return the crop
         return image.crop(bbox)
+    
+    return image
 
 def sharpness(image):
     """Measures the image sharpness
