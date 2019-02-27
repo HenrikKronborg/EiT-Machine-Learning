@@ -81,10 +81,8 @@ def equalize(image):
     histogram = image.histogram()
     
     # len(histogram) is 256 for the dataset
-    h = len(histogram)
-    
     # step size
-    step = reduce(lambda x, y: x+y, histogram)/h
+    step = reduce(lambda x, y: x+y, histogram)/len(histogram)
 
     # create equalization lookup table
     lookup_table = [n/step for n in accumulate(histogram)]
