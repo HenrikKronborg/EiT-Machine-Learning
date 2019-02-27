@@ -15,7 +15,7 @@ class FileName:
     filename = ""
     array = []
 
-    def display_picture():
+    def display_picture(self):
         filename = askopenfilename()
         array = ARRAY_FROM_PATH(filename)
         img = Image.open(filename)
@@ -25,7 +25,7 @@ class FileName:
         panel.image = img
         panel.grid(row = 0, column = 1, rowspan=3, columnspan = 5)
 
-    def predict():
+    def predict(self):
         print("hei")
     
 def gui():
@@ -42,9 +42,9 @@ def gui():
     rb1.grid(row = 0,column = 0)
     rb2.grid(row = 1,column = 0)
     
-    age_corr_label = Label(root, width = 10, text = "Correct Age [months]")
+    age_corr_label = Label(root, width = 20, text = "Correct Age [months]")
     age_corr_label.grid(row = 0, column = 6)
-    age_pred_label = Label(root, width = 10, text = "Age prediction [months]")
+    age_pred_label = Label(root, width = 20, text = "Age prediction [months]")
     age_pred_label.grid(row = 1, column = 6)
     age_corr = Entry(root, state="disabled", width = 25)
     age_corr.grid(row=0,column=7)
