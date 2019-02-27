@@ -38,9 +38,9 @@ def trim(image):
     # Get the boundary box
     bbox = diff.getbbox()
     if bbox:
-        # Return the crop
-        return image.crop(bbox)
+        image = image.crop(bbox)
     
+    # Return the trimmed image
     return image
 
 def sharpness(image):

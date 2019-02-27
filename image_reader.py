@@ -3,6 +3,7 @@
 from PIL import Image
 import numpy as np
 from image_preprocessor import trim, equalize
+import matplotlib.pyplot as plt
 
 # --- Parameters -------------------------------------------------------------
 
@@ -72,12 +73,15 @@ def ARRAY_FROM_PATH(path):
     makes an array from the image
     pads zeros to make the array {MAX_HEIGHT}x{MAX_WIDTH} (reverse of image size)
     """
-    raw_image = Image.open(path)
-    resized_image = scale(raw_image)
-    trimmed_image = trim(resized_image)
-    equalized_image = equalize(trimmed_image)
+    img = Image.open(path)
+    img = trim(img)
+    img = scale(img)
+    img = equalize(img)
     # crop_image = crop()
-    array_image = np.asarray(equalized_image)
+    array_image = np.asarray(img)
     padded_array_image = pad(array_image)
+    
+    # plt.imshow(img)
+    # plt.show()
     
     return padded_array_image
