@@ -9,9 +9,13 @@ def createModel(opt, loss):
     model = keras.Sequential()
 
     model.add(InputLayer(input_shape=(300, 300, 1)))
+    model.add(Conv2D(24, (5, 5), activation="relu", name="conv2d_1"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(24, (4, 4), activation="relu", name="conv2d_2"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
 
-    model.add(Dense(512, activation=tf.nn.relu))
     model.add(Dense(256, activation=tf.nn.relu))
     model.add(Dense(256, activation=tf.nn.relu))
     model.add(Dense(128, activation=tf.nn.relu))
