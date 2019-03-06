@@ -10,10 +10,10 @@ import keras
 
 ### hyper parameters adjust these:
 
-in_shape = (28, 28)
+in_shape = (100, 100)
 
-NUM_CLASSES = 4
-EPOCHS = 100
+NUM_CLASSES = 20
+EPOCHS = 20
 BATCH_SIZE = 32
 
 LEARNING_RATE = 0.001
@@ -34,10 +34,11 @@ train_data /= 255
 train_data = np.array(train_data)
 train_data = np.resize(train_data, (len(train_data), in_shape[0], in_shape[1], 1))
 
-
 # convert labels to years and one hot encode
-ezyConvert = lambda x: x // 60
+ezyConvert = lambda x: x // 12
 train_labels = ezyConvert(train_labels)
+
+# one hot encode labels
 train_labels = keras.utils.to_categorical(train_labels, num_classes=NUM_CLASSES)
 print("one hot: ", train_labels[0]); print("one hot: ", train_labels[1])
 
@@ -56,29 +57,39 @@ print(hist.history)
 # save model.
 model.save("new_model.h5")
 
+
+
 ## testing < --------
 
+# load data
 test_data = np.array(data["test_set"])
-test_data = np.resize(test_data, (200, in_shape[0], in_shape[1], 1))
+test_data = np.resize(test_data, (test_data.shape[0], in_shape[0], in_shape[1], 1))
 
+# normalize!
+test_data /= 255
+
+# convert labels
 test_labels = ezyConvert(data["test_labels"])
 test_labels = keras.utils.to_categorical(test_labels, num_classes=NUM_CLASSES)
 
-model.evaluate(test_data, test_labels)
+# test.
+score = model.evaluate(test_data, test_labels)
+print("Test set:")
+print("loss:", score[0])
+print("accuracy:", score[1])
 
-
+'''
 # ---------------- yala testing --------------
-for i in range(0, 5):
+for i in range(0, 10):
     pred = model.predict(np.array([train_data[i]]))
 
     print("pred output: ", pred)
     print("predicted: ", np.argmax(pred))
-    print("actual answer: ", np.argmax(oneHot_labels[i]))
+    print("actual answer: ", np.argmax(train_labels[i]))
 
     plt.imshow(np.resize(train_data[i], (100, 100)))
     plt.show()
-
-
+'''
 
 
 
