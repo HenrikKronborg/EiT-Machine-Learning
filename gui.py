@@ -5,9 +5,9 @@ from image_reader import *
 
 #------------------------Parameters----------------------------------
 
-m = 0
-f = 0
 root = Tk()
+
+gender = IntVar()
 
 #------------------------FileName Class-------------------------------
 
@@ -15,7 +15,8 @@ class FileName:
     filename = ""
     array = []
 
-    def display_picture(self):
+    @staticmethod
+    def display_picture():
         filename = askopenfilename()
         array = ARRAY_FROM_PATH(filename)
         img = Image.open(filename)
@@ -25,7 +26,8 @@ class FileName:
         panel.image = img
         panel.grid(row = 0, column = 1, rowspan=3, columnspan = 5)
 
-    def predict(self):
+    @staticmethod
+    def predict():
         print("hei")
     
 def gui():
@@ -37,8 +39,9 @@ def gui():
     button2 = Button(root, text="Predict", width=20, command=path.predict)
     button2.grid(row = 4, column = 5)
     
-    rb1 = Radiobutton(root, text = "Male", padx = 20, variable = m, value = 1)
-    rb2 = Radiobutton(root, text = "Female", padx = 20, variable = f, value = 2)
+    rb1 = Radiobutton(root, text = "Male", padx = 20, variable = gender, value = 1, )
+    rb2 = Radiobutton(root, text = "Female", padx = 20, variable = gender, value = 2)
+    gender.set(1)
     rb1.grid(row = 0,column = 0)
     rb2.grid(row = 1,column = 0)
     
