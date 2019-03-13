@@ -79,6 +79,7 @@ def ARRAY_FROM_PATH(path):
     """
     img = Image.open(path)
     img = trim(img)
+    img = equalize(img)
     img = crop(img)
     img = scale(img)
     img = equalize(img)

@@ -4,11 +4,10 @@ import os
 import numpy as np
 
 def crop(image):
-        cv_img = cv2.CreateImageHeader(image.size, cv2.IPL_DEPTH_8U, 3)  # RGB image
-        cv.SetData(cv_img, pil_img.tostring(), pil_img.size[0]*3)
+        arr = np.asarray(image).copy()
         
-        gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-        gray = cv2.blur(gray, (10, 10))
+        #gray = cv2.cvtColor(arr, cv2.COLOR_BGR2GRAY)
+        gray = cv2.blur(arr, (10, 10))
         ret, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
         contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         c = max(contours, key=cv2.contourArea)
@@ -22,9 +21,11 @@ def crop(image):
         # Padding
         dx = 10
         dy = 10
-        cv_img = cv_img[y-dy:y+h+dy, x+dx:x+w+dx]
+        cv_img = arr[max(0, y-dy):y+h+dy, max(0, x+dx):x+w+dx]
         
-        return Image.fromstring("L", cv.GetSize(cv_img), cv_img.tostring())
+        cv2.imshow("ttttt", cv_img)
+        
+        return Image.fromarray(cv_img)
 
 if __name__ == '__main__':
     path = "../corrected-boneage-training-dataset/"
