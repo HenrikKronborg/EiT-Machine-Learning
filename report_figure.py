@@ -8,7 +8,7 @@ from matplotlib.patches import ConnectionPatch
 example_image_path = "boneage-training-dataset/1418.png"
 
 
-fig, axes = plt.subplots(2, 2)
+fig, axes = plt.subplots(2, 3)
 
 for row in axes:
     for ax in row:
@@ -32,8 +32,6 @@ def image_plot(image, location):
     axes[location].imshow(ImageOps.flip(image), cmap='gray')
     fix_ax_ratio(axes[location], image)
     
-example_image = Image.open(example_image_path)
-image_plot(example_image, (0,0))
 
 def arrow_between(location1, location2, side1, side2, broken=False):
     def get_coords(ax, side):
@@ -42,9 +40,10 @@ def arrow_between(location1, location2, side1, side2, broken=False):
             x = ax.get_xlim()[side=='right']
             
             #fix bug hack
-            x += (side=='left')*sum(ax.get_xlim())/8
+            #x += (side=='left')*sum(ax.get_xlim())/8
         elif side in {'top', 'bottom'}:
             y = ax.get_ylim()[side=='top']
+            y -= (side=='top')*sum(ax.get_ylim())/16 #hack
             x = sum(ax.get_xlim())//2
         
         #ax.plot(x,y,'go',markersize=10)
@@ -68,24 +67,36 @@ def arrow_between(location1, location2, side1, side2, broken=False):
     
     axes[location1].add_artist(p)
 
+
+example_image = Image.open(example_image_path)
+image_plot(example_image, (0,0))
+
+    
 example_image = trim(example_image)
 image_plot(example_image, (0,1))
 
 arrow_between((0,0), (0,1), 'right', 'left')
 
-example_image = crop(equalize(example_image))
+example_image = equalize(example_image)
+image_plot(example_image, (0,2))
+
+arrow_between((0,1), (0,2), 'right', 'left')
+
+example_image = crop(example_image)
 image_plot(example_image, (1,0))
 
-arrow_between((0,1), (1,0), 'bottom', 'top', broken=True)
+arrow_between((0,2), (1,0), 'bottom', 'top', broken=True)
 
 example_image = equalize(example_image)
 image_plot(example_image, (1,1))
 
 arrow_between((1,0), (1,1), 'right', 'left')
 
-# crop_image = crop()
-#array_image = np.asarray(example_image)
-#array_image = pad(array_image)
+example_image = scale(example_image)
+image_plot(example_image, (1,2))
 
-plt.savefig("test.pdf")
-plt.show()
+arrow_between((1,1), (1,2), 'right', 'left')
+
+
+#plt.show()
+plt.savefig("image_processing.pdf")
