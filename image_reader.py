@@ -3,6 +3,7 @@
 from PIL import Image
 import numpy as np
 from image_preprocessor import trim, equalize
+from opencv import crop
 import matplotlib.pyplot as plt
 
 # --- Parameters -------------------------------------------------------------
@@ -16,7 +17,7 @@ MAX_WIDTH  = 300
 
 
 # --- Image scaler ------------------------------------------------------------
-def scale(image):
+def scale(image, antialiasing=True):
     """
     This scales the image such that it is not taller nor wider than the maximum width/height given, while keeping the aspect ratio.
     """
@@ -31,7 +32,10 @@ def scale(image):
                                 (image_width, image_height))
     
     # Return scaled image
-    return image.resize((new_width, new_height), Image.ANTIALIAS)
+    if antialiasing:
+        return image.resize((new_width, new_height), Image.ANTIALIAS)
+    else:
+        return image.resize((new_width, new_height))
     
 
 # --- Array padder ------------------------------------------------------------
@@ -75,9 +79,9 @@ def ARRAY_FROM_PATH(path):
     """
     img = Image.open(path)
     img = trim(img)
+    img = crop(img)
     img = scale(img)
     img = equalize(img)
-    # crop_image = crop()
     array_image = np.asarray(img)
     padded_array_image = pad(array_image)
     
