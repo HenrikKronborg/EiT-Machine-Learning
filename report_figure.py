@@ -87,5 +87,5 @@ arrow_between((1,0), (1,1), 'right', 'left')
 #array_image = np.asarray(example_image)
 #array_image = pad(array_image)
 
-plt.show()
 plt.savefig("test.pdf")
+plt.show()
