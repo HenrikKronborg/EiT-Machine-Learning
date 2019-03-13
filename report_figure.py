@@ -5,10 +5,21 @@ from image_reader import trim, crop, scale, equalize, pad
 import matplotlib.pyplot as plt
 from matplotlib.patches import ConnectionPatch
 
-example_image_path = "boneage-training-dataset/1418.png"
+example_image_paths = [
+    "boneage-training-dataset/1378.png",
+    "boneage-training-dataset/1399.png",
+    "boneage-training-dataset/1429.png",
+    "boneage-training-dataset/1445.png",
+    "boneage-training-dataset/1590.png",
+    "boneage-training-dataset/1609.png",
+    "boneage-training-dataset/1855.png",
+    "boneage-training-dataset/1934.png",
+]
 
 
-fig, axes = plt.subplots(2, 3)
+example_image_path = example_image_paths[0]
+
+fig, axes = plt.subplots(2, 3)#, figsize=(28, 24))
 
 for row in axes:
     for ax in row:
@@ -28,7 +39,8 @@ def fix_ax_ratio(ax, image):
     ylim = -dh, h+dh
 
 
-def image_plot(image, location):
+def image_plot(image, location, background_color=None):
+    if background_color: axes[location].set_facecolor(background_color)
     axes[location].imshow(ImageOps.flip(image), cmap='gray')
     fix_ax_ratio(axes[location], image)
     
@@ -67,36 +79,54 @@ def arrow_between(location1, location2, side1, side2, broken=False):
     
     axes[location1].add_artist(p)
 
+graph = "process"
 
-example_image = Image.open(example_image_path)
-image_plot(example_image, (0,0))
+if graph == "process":
+    example_image = Image.open(example_image_path)
+    image_plot(example_image, (0,0))
+
+
+    example_image = trim(example_image)
+    image_plot(example_image, (0,1))
+
+    arrow_between((0,0), (0,1), 'right', 'left')
+
+    example_image = equalize(example_image)
+    image_plot(example_image, (0,2))
+
+    arrow_between((0,1), (0,2), 'right', 'left')
+
+    example_image = crop(example_image)
+    image_plot(example_image, (1,0))
+
+    arrow_between((0,2), (1,0), 'bottom', 'top', broken=True)
+
+    example_image = equalize(example_image)
+    image_plot(example_image, (1,1))
+
+    arrow_between((1,0), (1,1), 'right', 'left')
+
+    example_image = scale(example_image)
+    image_plot(example_image, (1,2))
+
+    arrow_between((1,1), (1,2), 'right', 'left')
+    
+    plt.savefig("image_processing.pdf", bbox_inches = 'tight',
+    pad_inches = 0)
 
     
-example_image = trim(example_image)
-image_plot(example_image, (0,1))
-
-arrow_between((0,0), (0,1), 'right', 'left')
-
-example_image = equalize(example_image)
-image_plot(example_image, (0,2))
-
-arrow_between((0,1), (0,2), 'right', 'left')
-
-example_image = crop(example_image)
-image_plot(example_image, (1,0))
-
-arrow_between((0,2), (1,0), 'bottom', 'top', broken=True)
-
-example_image = equalize(example_image)
-image_plot(example_image, (1,1))
-
-arrow_between((1,0), (1,1), 'right', 'left')
-
-example_image = scale(example_image)
-image_plot(example_image, (1,2))
-
-arrow_between((1,1), (1,2), 'right', 'left')
-
-
-#plt.show()
-plt.savefig("image_processing.pdf")
+if graph == "multi":
+    for i, img in enumerate(map(Image.open, example_image_paths)):
+        image_plot(img, (0, i))
+        img = trim(img)
+        img = equalize(img)
+        img = crop(img)
+        img = equalize(img)
+        img = scale(img)
+        image_plot(img, (1, i), background_color='black')
+        
+        arrow_between((0,i), (1,i), 'bottom', 'top')
+    
+    plt.subplots_adjust(bottom=0.35, top=0.6, hspace=0.1)
+    plt.savefig("multi.pdf", bbox_inches = 'tight',
+    pad_inches = 0)
