@@ -1,6 +1,7 @@
 from random import randint
 #from dataset_loader import data
 from model import createModel
+from sklearn.metrics import confusion_matrix
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -77,6 +78,13 @@ test_labels = ezyConvert(np.load("/lustre1/work/johnew/EiT/data/test_labels.npy"
 test_labels = keras.utils.to_categorical(test_labels, num_classes=NUM_CLASSES)
 
 model.evaluate(test_data, test_labels)
+
+# create confusion matrix.
+test_pred = model.predict(train_data)
+test_pred = np.argmax(test_pred, axis=1)
+cm = confusion_matrix(test_labels, test_pred)
+
+np.save("confusionMatrix.npy", cm)
 
 print("finished")
 
