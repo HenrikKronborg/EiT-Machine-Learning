@@ -3,13 +3,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-test_set = "training_set"
-test_labels = "training_labels"
+if __name__ == "__main__":
+    test_set = "training_set"
+    test_labels = "training_labels"
 
-with open(f"{test_set}.P", mode="rb") as data_file, open(f"{test_labels}.P", mode="rb") as label_file:
-    print(f"Reading {test_set}.P.")
-    data = np.load(data_file)
-    labels = np.load(label_file)
+    with open(f"{test_set}.P", mode="rb") as data_file, open(f"{test_labels}.P", mode="rb") as label_file:
+        print(f"Reading {test_set}.P.")
+        data = np.load(data_file)
+        labels = np.load(label_file)
 
 def get_age(p): return int(p//12)
 
