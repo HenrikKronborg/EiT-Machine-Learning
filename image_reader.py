@@ -2,7 +2,6 @@
 
 from PIL import Image
 import numpy as np
-from image_preprocessor import trim, equalize
 import matplotlib.pyplot as plt
 
 # --- Parameters -------------------------------------------------------------
@@ -16,7 +15,7 @@ MAX_WIDTH  = 300
 
 
 # --- Image scaler ------------------------------------------------------------
-def scale(image):
+def scale(image, antialiasing=True):
     """
     This scales the image such that it is not taller nor wider than the maximum width/height given, while keeping the aspect ratio.
     """
@@ -31,7 +30,10 @@ def scale(image):
                                 (image_width, image_height))
     
     # Return scaled image
-    return image.resize((new_width, new_height), Image.ANTIALIAS)
+    if antialiasing:
+        return image.resize((new_width, new_height), Image.ANTIALIAS)
+    else:
+        return image.resize((new_width, new_height))
     
 
 # --- Array padder ------------------------------------------------------------
@@ -66,6 +68,113 @@ def pad(array):
         constant_values=0,    # set the constant value to zero
     )
 
+#------
+from PIL import Image, ImageChops, ImageStat #REMOVE?
+from functools import reduce
+from itertools import accumulate
+
+def trim(image):
+    """Trims whitespace around the image
+    
+    Parameters
+    ----------
+    image : PIL.ImageFile
+        The image that should be cropped
+    
+    Returns
+    -------
+    : PIL.ImageFile
+        The cropped image
+    """
+    #https://stackoverflow.com/questions/10615901/
+    # Create the background from the top-left pixel
+    bg = Image.new(image.mode, image.size, image.getpixel((0,0)))
+    
+    # Get the difference between the background and the image
+    diff = ImageChops.difference(image, bg)
+    
+    # Take care of noise (magic)
+    f = sharpness(image)/2
+    diff = ImageChops.add(diff, diff, f, -100)
+    
+    # Get the boundary box
+    bbox = diff.getbbox()
+    if bbox:
+        image = image.crop(bbox)
+    
+    # Return the trimmed image
+    return image
+
+def sharpness(image):
+    """Measures the image sharpness
+    
+    Parameters
+    ----------
+    image : PIL.ImageFile
+        The image that will be measured
+    
+    Returns
+    -------
+    : float
+        A value measuring the image sharpness
+    """
+    #https://stackoverflow.com/questions/6646371/
+    array = np.asarray(image, dtype=np.int32)
+
+    gy, gx = np.gradient(array)
+    gradient_norm = np.sqrt(gx**2 + gy**2)
+    sharpness = np.average(gradient_norm)
+    
+    return sharpness
+
+def equalize(image):
+    """Equalizes the histogram
+    
+    Parameters
+    ----------
+    image : PIL.ImageFile
+        The image that will be equalized
+    
+    Returns
+    -------
+    : PIL.ImageFile
+        The equalized image
+    """
+    #https://stackoverflow.com/questions/7116113/
+    #http://effbot.org/zone/pil-histogram-equalization.htm
+    histogram = image.histogram()
+    
+    # len(histogram) is 256 for the dataset
+    # step size
+    step = reduce(lambda x, y: x+y, histogram)/len(histogram)
+
+    # create equalization lookup table
+    lookup_table = [n/step for n in accumulate(histogram)]
+
+    # map image through lookup table
+    return image.point(lookup_table)
+
+#-------
+import cv2
+
+def crop(image):
+    arr = np.asarray(image).copy()
+
+    gray = cv2.blur(arr, (10, 10))
+    ret, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    c = max(contours, key=cv2.contourArea)
+
+
+    x, y, w, h = cv2.boundingRect(c)
+    # Padding
+    dx = 10
+    dy = 10
+    cv_img = arr[max(0, y-dy):y+h+dy, max(0, x+dx):x+w+dx]
+
+    return Image.fromarray(cv_img)
+
+
 def ARRAY_FROM_PATH(path):
     """
     Gets the image from the path,
@@ -75,9 +184,10 @@ def ARRAY_FROM_PATH(path):
     """
     img = Image.open(path)
     img = trim(img)
+    img = equalize(img)
+    img = crop(img)
     img = scale(img)
     img = equalize(img)
-    # crop_image = crop()
     array_image = np.asarray(img)
     padded_array_image = pad(array_image)
     

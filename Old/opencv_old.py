@@ -27,17 +27,25 @@ if __name__ == '__main__':
 
         x, y, w, h = cv2.boundingRect(c)
         # Padding
-        x -= 10
-        y -= 10
-        new_img = image[y:y + h, x:x + w]
+        dx = 10
+        dy = 10
+
+        new_img = image[max(0, y-dy):y + h + dy, max(0, x-dx):x + w + dx]
+
+        '''
+        dx = 1.1
+        dy = 1.1
+
+        new_img = image[int(y*0.99):y + h + int(y*1.01), int(x*0.99):x + w + int(y*1.01)]
+        '''
 
         # SAVE
-        #cv2.imwrite("../contour-boneage-training-dataset/" + file, new_img)
+        cv2.imwrite("../contour-boneage-training-dataset/" + file, new_img)
 
         # COMPARE
-        cv2.imshow("before", image)
-        cv2.imshow("after", new_img)
+        #cv2.imshow("before", image)
+        #cv2.imshow("after", new_img)
 
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
 
     cv2.destroyAllWindows()
