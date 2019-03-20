@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 # --- Parameters -------------------------------------------------------------
 
-TRAINING_DIR     = Path("boneage-training-dataset")
-TEST_DIR         = Path("boneage-test-dataset")
-SAMPLES_METADATA = Path("boneage-training-dataset.csv")
+TRAINING_DIR     = Path("/lustre1/work/johnew/EiT/data/boneage-training-dataset")
+TEST_DIR         = Path("/lustre1/work/johnew/EiT/data/test-dataset")
+SAMPLES_METADATA = Path("/lustre1/work/johnew/EiT/data/boneage-training-dataset.csv")
 
 # ----------------------------------------------------------------------------
 
@@ -65,9 +65,9 @@ file_object = {
 
 # Pickle dump the image arrays
 for file, obj in file_object.items():
-    with open(f"{file}.P", mode='wb') as pickle_file:
+    with open(f"/lustre1/work/johnew/EiT/data/{file}.npy", mode='wb') as pickle_file:
         print(f"Writing {file}.P.")
-        obj.dump(pickle_file)
+        np.save(pickle_file, obj)
 
 if __name__ == "__main__":
     mean_image = np.mean(training_arrays, axis=0)
