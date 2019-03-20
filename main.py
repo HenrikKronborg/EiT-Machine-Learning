@@ -1,5 +1,5 @@
 from random import randint
-from dataset_loader import data
+#from dataset_loader import data
 from model import createModel
 
 import numpy as np
@@ -10,10 +10,17 @@ import keras
 
 ### hyper parameters adjust these:
 
+<<<<<<< HEAD
 in_shape = (100, 100)
 
 NUM_CLASSES = 20
 EPOCHS = 20
+=======
+in_shape = (300, 300)
+
+NUM_CLASSES = 20
+EPOCHS = 10
+>>>>>>> bf309e7ebfd30a6c3cfec70ba7ff139e5fc59826
 BATCH_SIZE = 32
 
 LEARNING_RATE = 0.001
@@ -24,8 +31,13 @@ opt = keras.optimizers.Adam(lr=LEARNING_RATE)
 ### ----------------------------------------
 
 # load data
-train_data = data["training_set"]
-train_labels = data["training_labels"]
+train_data = np.load("/lustre1/work/johnew/EiT/data/training_set.npy")
+train_labels = np.load("/lustre1/work/johnew/EiT/data/training_labels.npy")
+
+print("train data shape: ", train_data.shape)
+print("train labels shape: ", train_labels.shape)
+
+print("data loaded")
 
 # squeeze pixel value between 0 and 1
 train_data /= 255
@@ -45,22 +57,25 @@ print("one hot: ", train_labels[0]); print("one hot: ", train_labels[1])
 
 # creates a model with the structure defined in model.py
 model = createModel(opt, loss, in_shape, NUM_CLASSES)
+print("created model.....")
 
+early_stop = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
 
 # start training.
-hist = model.fit(train_data, train_labels, epochs=EPOCHS,
-          batch_size=BATCH_SIZE)
+hist = model.fit(train_data, train_labels, validation_split=0.1, epochs=EPOCHS,
+          batch_size=BATCH_SIZE, callbacks=[early_stop])
           
 print("-----------    Training finished.    -----------")
 print(hist.history)
 
 # save model.
-model.save("new_model.h5")
+model.save("/lustre1/work/johnew/EiT/models/full_model_01.h5")
 
 
 
 ## testing < --------
 
+<<<<<<< HEAD
 # load data
 test_data = np.array(data["test_set"])
 test_data = np.resize(test_data, (test_data.shape[0], in_shape[0], in_shape[1], 1))
@@ -77,6 +92,20 @@ score = model.evaluate(test_data, test_labels)
 print("Test set:")
 print("loss:", score[0])
 print("accuracy:", score[1])
+=======
+test_data = np.load("/lustre1/work/johnew/EiT/data/test_set.npy")
+test_data = np.resize(test_data, (200, in_shape[0], in_shape[1], 1))
+
+test_data /= 255 # normalize
+
+test_labels = ezyConvert(np.load("/lustre1/work/johnew/EiT/data/test_labels.npy"))
+test_labels = keras.utils.to_categorical(test_labels, num_classes=NUM_CLASSES)
+
+model.evaluate(test_data, test_labels)
+
+print("finished")
+
+>>>>>>> bf309e7ebfd30a6c3cfec70ba7ff139e5fc59826
 
 '''
 # ---------------- yala testing --------------
