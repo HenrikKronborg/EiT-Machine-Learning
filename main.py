@@ -10,17 +10,10 @@ import keras
 
 ### hyper parameters adjust these:
 
-<<<<<<< HEAD
-in_shape = (100, 100)
-
-NUM_CLASSES = 20
-EPOCHS = 20
-=======
 in_shape = (300, 300)
 
 NUM_CLASSES = 20
 EPOCHS = 10
->>>>>>> bf309e7ebfd30a6c3cfec70ba7ff139e5fc59826
 BATCH_SIZE = 32
 
 LEARNING_RATE = 0.001
@@ -59,7 +52,7 @@ print("one hot: ", train_labels[0]); print("one hot: ", train_labels[1])
 model = createModel(opt, loss, in_shape, NUM_CLASSES)
 print("created model.....")
 
-early_stop = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
+early_stop = keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True)
 
 # start training.
 hist = model.fit(train_data, train_labels, validation_split=0.1, epochs=EPOCHS,
@@ -75,26 +68,8 @@ model.save("/lustre1/work/johnew/EiT/models/full_model_01.h5")
 
 ## testing < --------
 
-<<<<<<< HEAD
-# load data
-test_data = np.array(data["test_set"])
-test_data = np.resize(test_data, (test_data.shape[0], in_shape[0], in_shape[1], 1))
-
-# normalize!
-test_data /= 255
-
-# convert labels
-test_labels = ezyConvert(data["test_labels"])
-test_labels = keras.utils.to_categorical(test_labels, num_classes=NUM_CLASSES)
-
-# test.
-score = model.evaluate(test_data, test_labels)
-print("Test set:")
-print("loss:", score[0])
-print("accuracy:", score[1])
-=======
 test_data = np.load("/lustre1/work/johnew/EiT/data/test_set.npy")
-test_data = np.resize(test_data, (200, in_shape[0], in_shape[1], 1))
+test_data = np.resize(test_data, (len(test_data), in_shape[0], in_shape[1], 1))
 
 test_data /= 255 # normalize
 
@@ -105,7 +80,6 @@ model.evaluate(test_data, test_labels)
 
 print("finished")
 
->>>>>>> bf309e7ebfd30a6c3cfec70ba7ff139e5fc59826
 
 '''
 # ---------------- yala testing --------------
