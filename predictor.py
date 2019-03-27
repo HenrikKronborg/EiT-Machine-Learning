@@ -11,13 +11,13 @@ from sklearn.metrics import confusion_matrix
 
 if __name__ == "__main__":
 
-    MODEL_NAME = "subSet-model.h5"
+    MODEL_NAME = "full_model_01.h5"
 
     model = load_model(MODEL_NAME)
     print("data loaded.")
 
-    DATA_PATH = "2test_set.npy"
-    LABEL_PATH = "2test_labels.npy"
+    DATA_PATH = "data/test_set.P"
+    LABEL_PATH = "data/test_labels.P"
 
     test = np.load(DATA_PATH)[100:]
     test = np.resize(test, (len(test), 100, 100, 1))
