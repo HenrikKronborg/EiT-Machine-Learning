@@ -1,5 +1,5 @@
 from pathlib import Path
-from image_reader import ARRAY_FROM_PATH
+from image_reader import ARRAY_FROM_PATH, SIMPLE_ARRAY_FROM_PATH
 from image_reader import MAX_HEIGHT, MAX_WIDTH
 import csv
 import numpy as np
@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 TRAINING_DIR     = Path("/lustre1/work/johnew/EiT/data/boneage-training-dataset")
 TEST_DIR         = Path("/lustre1/work/johnew/EiT/data/test-dataset")
 SAMPLES_METADATA = Path("/lustre1/work/johnew/EiT/data/boneage-training-dataset.csv")
+GENERATED_DIR    = Path("/lustre1/work/johnew/EiT/simple/")
+ARRAY_CREATOR    = SIMPLE_ARRAY_FROM_PATH
 
 # ----------------------------------------------------------------------------
 
@@ -42,7 +44,7 @@ def obtain_data(data_path, id_label):
         print(f"Reading file {i+1} of {obj_count}.")
         
         # gets array from image path
-        dataset[i] = ARRAY_FROM_PATH(image_file.__str__())
+        dataset[i] = ARRAY_CREATOR(image_file.__str__())
         
         # gets label from id (file name)
         label[i] = id_label[image_file.stem]
@@ -65,7 +67,7 @@ file_object = {
 
 # Pickle dump the image arrays
 for file, obj in file_object.items():
-    with open(f"/lustre1/work/johnew/EiT/data/2{file}.npy", mode='wb') as pickle_file:
+    with open(GENERATED_DIR / f"{file}.npy", mode='wb') as pickle_file:
         print(f"Writing {file}.P.")
         np.save(pickle_file, obj)
 

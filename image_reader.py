@@ -195,3 +195,17 @@ def ARRAY_FROM_PATH(path):
     # plt.show()
     
     return padded_array_image
+
+def SIMPLE_ARRAY_FROM_PATH(path):
+        """
+    Gets the image from the path,
+    resizes the image no larger than {MAX_WIDTH}x{MAX_HEIGHT} while keeping aspect ratio,
+    makes an array from the image
+    pads zeros to make the array {MAX_HEIGHT}x{MAX_WIDTH} (reverse of image size)
+    """
+    img = Image.open(path)
+    img = crop(img)
+    array_image = np.asarray(img)
+    padded_array_image = pad(array_image)
+    
+    return padded_array_image
