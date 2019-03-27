@@ -20,8 +20,10 @@ def createModel(opt, loss, in_shape, num_classes):
 
     # Stacking a new fully connected network on top of it    
     x = Flatten()(x)
-    x = Dense(256, activation='relu')(x)
-    x = Dropout(0.3)(x)
+    x = Dense(512, activation='relu')(x)
+    x = Dropout(0.5)(x)
+    x = Dense(512, activation='relu')(x)
+    x = Dropout(0.5)(x)
     x = Dense(num_classes, activation='softmax')(x)
 
     custom_model = keras.Model(input = vgg_model.input, output = x)

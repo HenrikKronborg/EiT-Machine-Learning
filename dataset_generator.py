@@ -65,7 +65,7 @@ file_object = {
 
 # Pickle dump the image arrays
 for file, obj in file_object.items():
-    with open(f"/lustre1/work/johnew/EiT/data/{file}.npy", mode='wb') as pickle_file:
+    with open(f"/lustre1/work/johnew/EiT/data/2{file}.npy", mode='wb') as pickle_file:
         print(f"Writing {file}.P.")
         np.save(pickle_file, obj)
 

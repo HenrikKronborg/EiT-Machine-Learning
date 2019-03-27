@@ -1,5 +1,4 @@
 from random import randint
-from dataset_loader import data
 from VGG import createModel
 
 import numpy as np
@@ -8,8 +7,8 @@ import tensorflow as tf
 import keras
 
 # load training data and convert to RGB
-train_data = data["training_set"]
-train_labels = data["training_labels"]
+train_data = np.load("/lustre1/work/johnew/EiT/data/training_set.npy")
+train_labels = np.load("/lustre1/work/johnew/EiT/data/training_labels.npy")
 
 train_data = np.array(train_data)
 train_data = np.resize(train_data, (*train_data.shape, 1))
@@ -30,7 +29,7 @@ BATCH_SIZE = 64
 IN_SHAPE = rgb_train[0].shape
 NUM_CLASSES = 20
 EARLY_STOPPING_PATIENCE = 4
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.01
 LAMBDA = 0
 
 loss = keras.losses.MSE
@@ -45,7 +44,10 @@ hist = model.fit(rgb_train, oneHot_labels, validation_split=0.1, epochs=EPOCHS,
           batch_size=BATCH_SIZE, callbacks=[early_stop])
           
 print("-----------    Training finished.    -----------")
-print(hist.history.val_acc)
 
 # save model.
 model.save("new_model.h5")
+
+
+
+np.save("histTest.npy", hist)

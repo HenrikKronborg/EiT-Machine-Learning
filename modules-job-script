@@ -1,0 +1,8 @@
+#!/bih/bash
+
+module load gcccuda/2018a
+module load OpenMPI/2.1.2
+module load cuDNN/7.0.5.15 
+module load TensorFlow/1.8.0-Python-3.6.4 
+module load Python/3.6.4 
+module load GTK+/2.24.32 

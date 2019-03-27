@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 If the difference between image height/width and height/width is odd, an extra row will be added to the right and/or bottom side.
 """
 
-MAX_HEIGHT = 300
-MAX_WIDTH  = 300
+MAX_HEIGHT = 100
+MAX_WIDTH  = 100
 
 
 # --- Image scaler ------------------------------------------------------------
